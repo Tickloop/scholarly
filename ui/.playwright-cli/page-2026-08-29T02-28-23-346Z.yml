@@ -1,0 +1,11 @@
+- application [ref=f2e2]:
+  - img "Mini Map" [ref=f2e6]
+  - generic "Control Panel" [ref=f2e7]:
+    - button "Zoom In" [ref=f2e8] [cursor=pointer]
+    - button "Zoom Out" [ref=f2e11] [cursor=pointer]
+    - button "Fit View" [ref=f2e14] [cursor=pointer]
+    - button "Toggle Interactivity" [ref=f2e17] [cursor=pointer]
+  - button "Add block" [ref=f2e21]
+  - link "React Flow attribution" [ref=f2e23] [cursor=pointer]:
+    - /url: https://reactflow.dev/attribution
+    - text: React Flow

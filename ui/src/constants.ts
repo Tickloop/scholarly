@@ -1,0 +1,24 @@
+export const constants = {
+  API_BASE_URL: import.meta.env.VITE_API_BASE_URL ?? '',
+  LAST_CANVAS_ID_STORAGE_KEY: 'research-map:last-canvas-id',
+  PAPER_NODE_DEFAULT_WIDTH: 320,
+  PAPER_NODE_HORIZONTAL_GAP: 160,
+  RUN_EVENT_TYPES: [
+    'run.started',
+    'agent.message.delta',
+    'agent.thread.started',
+    'tool.started',
+    'tool.completed',
+    'paper.added',
+    'source.completed',
+    'review.completed',
+    'relationship.added',
+    'run.completed',
+    'run.failed',
+    'run.cancelled',
+  ],
+  THEME_COLORS: {
+    primary: '#B0DDBF',
+    secondary: '#48AE63',
+  },
+} as const

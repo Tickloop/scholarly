@@ -1,0 +1,18 @@
+.paper-node {
+  border: 1px solid currentColor;
+}
+
+.paper-node[data-selected='true'] {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.paper-node__inspector {
+  position: absolute;
+  top: 52px;
+  right: 15px;
+  z-index: 8;
+  max-height: 80vh;
+  overflow-y: auto;
+  pointer-events: auto;
+}

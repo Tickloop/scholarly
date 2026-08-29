@@ -1,0 +1,47 @@
+import type { PaperReview } from '@/types'
+
+export const attentionReview: PaperReview = {
+  coreIdea:
+    'Sequence modeling can use attention alone, without recurrent or convolutional layers.',
+  problemSpace:
+    'Recurrent sequence models process tokens in order, which limits training parallelism and makes long-range dependencies harder to learn.',
+  approach:
+    'The Transformer uses stacked encoder and decoder layers built from multi-head self-attention, position-wise feed-forward networks, residual connections, layer normalization, and positional encodings.',
+  data:
+    'The translation models train on WMT 2014 English-German, with about 4.5 million sentence pairs, and English-French, with 36 million sentence pairs. The paper also evaluates English constituency parsing on the Wall Street Journal portion of the Penn Treebank.',
+  novelContribution:
+    'It introduces the first sequence transduction architecture described by the authors as relying entirely on self-attention, removing sequence-aligned recurrence and convolution.',
+  results:
+    'The large model reaches 28.4 BLEU on WMT 2014 English-German and 41.8 BLEU on English-French. The model also transfers successfully to English constituency parsing.',
+  benchmarks:
+    'The main benchmarks are WMT 2014 English-German newstest2014, WMT 2014 English-French newstest2014, and Penn Treebank constituency parsing.',
+  statisticalEvidence:
+    'The paper reports BLEU, perplexity, parsing F1, parameter counts, and estimated training cost. It includes architectural ablations, but does not report confidence intervals or statistical significance tests.',
+  limitations:
+    'Full self-attention has quadratic cost in sequence length. Translation is evaluated on two language pairs, and the reported comparisons do not include uncertainty estimates.',
+  citedIdeasAndDifferences:
+    'The work keeps the encoder-decoder pattern and attention ideas from earlier sequence-to-sequence models, but replaces their recurrent layers. Unlike ByteNet and ConvS2S, it also removes convolution and connects token positions directly through self-attention.',
+}
+
+export const bertReview: PaperReview = {
+  coreIdea:
+    'A Transformer encoder can learn general language representations from unlabeled text by using both left and right context at every layer.',
+  problemSpace:
+    'Earlier pre-trained language models were usually left-to-right or combined separate directional models, limiting the context available to each token and often requiring task-specific architectures.',
+  approach:
+    'BERT pre-trains a multi-layer Transformer encoder with masked language modeling and next sentence prediction. A small task-specific output layer is then added while all pre-trained parameters are fine-tuned for each downstream task.',
+  data:
+    'Pre-training uses BooksCorpus, with about 800 million words, and English Wikipedia, with about 2.5 billion words. Downstream evaluation uses labeled datasets from GLUE, SQuAD v1.1, SQuAD v2.0, and SWAG.',
+  novelContribution:
+    'It demonstrates that deeply bidirectional Transformer representations can be pre-trained once and adapted to both sentence-level and token-level tasks with minimal architecture changes.',
+  results:
+    'The paper reports state-of-the-art results on eleven NLP tasks, including a GLUE score of 80.5, 86.7% MultiNLI accuracy, 93.2 SQuAD v1.1 test F1, and 83.1 SQuAD v2.0 test F1.',
+  benchmarks:
+    'The main benchmarks are the GLUE task collection, SQuAD v1.1 and v2.0 question answering, and SWAG commonsense inference. The paper also evaluates feature extraction on CoNLL-2003 named entity recognition.',
+  statisticalEvidence:
+    'The paper reports task metrics and ablations for pre-training objectives, model size, and feature extraction. Some model-size experiments average five fine-tuning restarts, but the main results do not include confidence intervals or statistical significance tests.',
+  limitations:
+    'Pre-training is computationally expensive and uses English-only corpora. Masked language modeling creates a mismatch because the mask token does not appear during fine-tuning, and the large model can be unstable when fine-tuned on small datasets.',
+  citedIdeasAndDifferences:
+    'BERT uses the Transformer encoder introduced by Vaswani et al. Unlike OpenAI GPT, it removes the left-to-right attention constraint. Unlike ELMo, it learns bidirectional context jointly at every layer instead of concatenating separately trained directional models.',
+}

@@ -1,0 +1,33 @@
+- application [ref=e2]:
+  - generic [ref=e4]:
+    - generic:
+      - generic:
+        - img:
+          - group "Edge from 01a04a27-0744-74ca-a574-8d0bc4f6f1da to 01a04a27-0745-7c24-a120-182c6a6507be" [ref=e5] [cursor=pointer]:
+            - generic [ref=e8]: provides the encoder architecture for
+      - generic:
+        - group [ref=e10]:
+          - article [ref=e11]:
+            - heading "Attention Is All You Need" [level=2] [ref=e13]
+            - time [ref=e14]: Dec 2017
+            - paragraph [ref=e15]: Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit
+            - paragraph [ref=e16]: Introduces the Transformer, replacing recurrence with self-attention for sequence modeling.
+            - link "Open paper" [ref=e17] [cursor=pointer]:
+              - /url: https://arxiv.org/abs/1706.03762
+        - group [ref=e19]:
+          - article [ref=e20]:
+            - 'heading "BERT: Pre-training of Deep Bidirectional Transformers" [level=2] [ref=e22]'
+            - time [ref=e23]: Jun 2019
+            - paragraph [ref=e24]: Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova
+            - paragraph [ref=e25]: Pre-trains bidirectional Transformer representations using masked language modeling.
+            - link "Open paper" [ref=e26] [cursor=pointer]:
+              - /url: https://arxiv.org/abs/1810.04805
+  - img "Mini Map" [ref=e29]
+  - generic "Control Panel" [ref=e32]:
+    - button "Zoom In" [ref=e33] [cursor=pointer]
+    - button "Zoom Out" [ref=e36] [cursor=pointer]
+    - button "Fit View" [ref=e39] [cursor=pointer]
+    - button "Toggle Interactivity" [ref=e42] [cursor=pointer]
+  - link "React Flow attribution" [ref=e46] [cursor=pointer]:
+    - /url: https://reactflow.dev/attribution
+    - text: React Flow
