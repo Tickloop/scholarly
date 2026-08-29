@@ -31,15 +31,27 @@ type Story = StoryObj<typeof meta>
 export const SelectAndOpenPaperControls: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    const page = within(canvasElement.ownerDocument.body)
     const node = await waitFor(() =>
       canvas.getByRole('article', { name: papers[0].title }),
     )
+    await expect(canvas.getByRole('button', { name: 'Relayout' })).toBeVisible()
     node.focus()
     await userEvent.keyboard('{Enter}')
 
+    const drawer = await page.findByRole('dialog')
+    await expect(within(drawer).getByText(papers[0].title)).toBeVisible()
     await expect(
-      canvas.getByRole('complementary', { name: papers[0].title }),
+      within(drawer).getByRole('tab', { name: 'Core idea' }),
     ).toBeVisible()
-    await expect(canvas.getByRole('button', { name: 'Relayout' })).toBeVisible()
+    await userEvent.keyboard('{Escape}')
+    await waitFor(() => expect(page.queryByRole('dialog')).toBeNull())
+    await waitFor(() => expect(node).toHaveFocus())
+    await expect(canvasElement.ownerDocument.activeElement).toBe(node)
+    await expect(
+      canvasElement.ownerDocument.body.querySelector(
+        '.paper-node__preview[data-state="open"]',
+      ),
+    ).toBeNull()
   },
 }

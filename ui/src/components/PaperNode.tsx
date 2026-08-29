@@ -1,11 +1,30 @@
 import { Handle, Position, type NodeProps } from '@xyflow/react'
-import { useId, useState, type FormEvent } from 'react'
+import {
+  useId,
+  useRef,
+  useState,
+  type FocusEvent,
+  type KeyboardEvent,
+  type MouseEvent,
+} from 'react'
 
 import '@/components/PaperNode.css'
-import { constants } from '@/constants'
 import { PaperDetail } from '@/components/PaperDetail'
-import { useCanvasActions } from '@/context/CanvasContext'
-import type { Paper, PaperCanvasNode, PaperUpdateInput } from '@/types'
+import { Badge } from '@/components/ui/badge'
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
+import { constants } from '@/constants'
+import type { Paper, PaperCanvasNode } from '@/types'
 
 const monthFormatter = new Intl.DateTimeFormat('en', {
   month: 'short',
@@ -15,177 +34,226 @@ const monthFormatter = new Intl.DateTimeFormat('en', {
 export function PaperNode({ data, selected }: NodeProps<PaperCanvasNode>) {
   const { paper } = data
   const titleId = useId()
-  const publicationDate = paper.year === null
-    ? undefined
-    : paper.month === null
-      ? String(paper.year)
-      : `${paper.year}-${String(paper.month).padStart(2, '0')}`
-  const publicationLabel = paper.year === null
-    ? 'Date unknown'
-    : paper.month === null
-      ? String(paper.year)
-      : `${monthFormatter.format(new Date(Date.UTC(paper.year, paper.month - 1)))} ${paper.year}`
+  const previewId = useId()
+  const nodeRef = useRef<HTMLElement>(null)
+  const [previewOpen, setPreviewOpen] = useState(false)
+  const publication = getPublication(paper)
+  const author = getAuthorLabel(paper.authors)
+  const status = getPaperStatus(paper)
+  const preview = getPaperPreview(paper)
+
+  function activate() {
+    setPreviewOpen(false)
+    data.onActivate?.(nodeRef.current ?? undefined)
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLElement>) {
+    delete event.currentTarget.dataset.restoringFocus
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      activate()
+    }
+  }
+
+  function keepNodeClosed(event: MouseEvent<HTMLElement>) {
+    event.stopPropagation()
+  }
+
+  function handleFocus(event: FocusEvent<HTMLElement>) {
+    if (event.currentTarget.dataset.restoringFocus === 'true') return
+    setPreviewOpen(true)
+  }
+
+  function handleBlur(event: FocusEvent<HTMLElement>) {
+    delete event.currentTarget.dataset.restoringFocus
+    setPreviewOpen(false)
+  }
 
   return (
-    <article
-      aria-labelledby={titleId}
-      className="paper-node"
-      data-selected={selected}
-      tabIndex={0}
-      style={{ width: constants.PAPER_NODE_DEFAULT_WIDTH }}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault()
-          data.onActivate?.()
-        }
+    <HoverCard
+      open={previewOpen}
+      onOpenChange={(open) => {
+        if (open && nodeRef.current?.dataset.restoringFocus === 'true') return
+        setPreviewOpen(open)
+      }}
+      openDelay={260}
+    >
+      <HoverCardTrigger asChild>
+        <article
+          ref={nodeRef}
+          aria-labelledby={titleId}
+          aria-describedby={previewOpen ? previewId : undefined}
+          className="paper-node"
+          data-selected={selected}
+          tabIndex={0}
+          style={{ width: constants.PAPER_NODE_DEFAULT_WIDTH }}
+          onClick={activate}
+          onBlur={handleBlur}
+          onFocus={handleFocus}
+          onKeyDown={handleKeyDown}
+          onPointerMove={(event) => {
+            if (event.currentTarget.dataset.restoringFocus !== 'true') return
+            delete event.currentTarget.dataset.restoringFocus
+            setPreviewOpen(true)
+          }}
+        >
+          <Handle type="target" position={Position.Left} />
+
+          <div className="paper-node__meta">
+            {publication.dateTime ? (
+              <time dateTime={publication.dateTime}>{publication.label}</time>
+            ) : (
+              <span>{publication.label}</span>
+            )}
+            <Badge data-status={status.tone} variant="outline">
+              {status.label}
+            </Badge>
+          </div>
+
+          <h2 id={titleId}>{paper.title}</h2>
+          <p className="paper-node__author">{author}</p>
+
+          <a
+            aria-label={`Open ${paper.title} in a new tab`}
+            className="paper-node__source nodrag nopan"
+            href={paper.link}
+            target="_blank"
+            rel="noreferrer"
+            onClick={keepNodeClosed}
+            onPointerDown={keepNodeClosed}
+          >
+            Source <span aria-hidden="true">↗</span>
+          </a>
+
+          <Handle type="source" position={Position.Right} />
+        </article>
+      </HoverCardTrigger>
+      <HoverCardContent
+        id={previewId}
+        align="start"
+        className="paper-node__preview nodrag nopan"
+        side="top"
+        sideOffset={12}
+      >
+        <p className="paper-node__preview-label">About this paper</p>
+        <p>{preview.text}</p>
+        {preview.kind !== 'summary' ? (
+          <Badge data-status={preview.kind} variant="outline">
+            {preview.label}
+          </Badge>
+        ) : null}
+      </HoverCardContent>
+    </HoverCard>
+  )
+}
+
+export function PaperInspector({
+  paper,
+  onClose,
+}: {
+  paper: Paper
+  onClose?: () => void
+}) {
+  const publication = getPublication(paper)
+  const status = getPaperStatus(paper)
+
+  return (
+    <Sheet
+      open
+      onOpenChange={(open) => {
+        if (!open) onClose?.()
       }}
     >
-      <Handle type="target" position={Position.Left} />
-      <h2 id={titleId}>{paper.title}</h2>
-      {publicationDate ? (
-        <time dateTime={publicationDate}>{publicationLabel}</time>
-      ) : (
-        <span>Date unknown</span>
-      )}
-      <p>{paper.authors.join(', ')}</p>
-      <p>{paper.summary}</p>
-      {paper.processing_status && paper.processing_status !== 'reviewed' ? (
-        <p role="status">Paper: {paper.processing_status}</p>
-      ) : null}
-      {paper.error ? <p role="alert">{paper.error}</p> : null}
-      <a className="nodrag" href={paper.link} target="_blank" rel="noreferrer">
-        Open paper
-      </a>
-      <Handle type="source" position={Position.Right} />
-    </article>
+      <SheetContent
+        aria-describedby={`paper-sheet-description-${paper.id}`}
+        className="paper-node__inspector"
+        side="right"
+      >
+        <SheetHeader className="paper-node__inspector-header">
+          <div className="paper-node__inspector-meta">
+            <Badge data-status={status.tone} variant="outline">
+              {status.label}
+            </Badge>
+            {publication.dateTime ? (
+              <time dateTime={publication.dateTime}>{publication.label}</time>
+            ) : (
+              <span>{publication.label}</span>
+            )}
+          </div>
+          <SheetTitle>{paper.title}</SheetTitle>
+          <SheetDescription id={`paper-sheet-description-${paper.id}`}>
+            {paper.authors.length > 0 ? paper.authors.join(', ') : 'Authors not listed'}
+          </SheetDescription>
+          <a
+            className="paper-node__inspector-source"
+            href={paper.link}
+            rel="noreferrer"
+            target="_blank"
+          >
+            Open paper <span aria-hidden="true">↗</span>
+          </a>
+        </SheetHeader>
+
+        <PaperDetail paper={paper} review={paper.review} />
+      </SheetContent>
+    </Sheet>
   )
 }
 
-export function PaperInspector({ paper }: { paper: Paper }) {
-  const actions = useCanvasActions()
-  if (!actions) return null
-
-  return (
-    <aside
-      aria-label={`Selected paper: ${paper.title}`}
-      className="paper-node__inspector nodrag nopan"
-    >
-      {paper.review ? <PaperDetail paper={paper} review={paper.review} /> : null}
-      <PaperControls
-        paper={paper}
-        onEdit={(input) => actions.editPaper?.(paper.id, input)}
-        onReviewEdit={(event) => {
-          event.preventDefault()
-          const form = new FormData(event.currentTarget)
-          const sections = Object.fromEntries(
-            Object.keys(paper.review ?? {}).map((key) => [
-              key,
-              String(form.get(key)),
-            ]),
-          )
-          actions.editReview?.(paper.id, { sections })
-        }}
-        onRetry={() => actions.retryPaperProcessing?.(paper.id)}
-        onRegenerate={() => actions.regeneratePaperReview?.(paper.id)}
-        onDelete={() => actions.removePaper?.(paper.id)}
-      />
-    </aside>
-  )
-}
-
-type DraftKey = 'title' | 'authors' | 'year' | 'month' | 'summary' | 'link'
-type Draft = Record<DraftKey, string>
-
-type PaperControlsProps = {
-  paper: Paper
-  onEdit: (input: PaperUpdateInput) => void
-  onReviewEdit: (event: FormEvent<HTMLFormElement>) => void
-  onRetry: () => void
-  onRegenerate: () => void
-  onDelete: () => void
-}
-
-function PaperControls({
-  paper,
-  onEdit,
-  onReviewEdit,
-  onRetry,
-  onRegenerate,
-  onDelete,
-}: PaperControlsProps) {
-  const [edits, setEdits] = useState<Partial<Draft>>({})
-  const values = { ...paperDraft(paper), ...edits }
-
-  function updateDraft(key: DraftKey, value: string) {
-    setEdits((current) => ({ ...current, [key]: value }))
+function getPublication(paper: Paper) {
+  if (paper.year === null) {
+    return { dateTime: undefined, label: 'Date unknown' }
   }
-
-  function submitMetadata(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const input: PaperUpdateInput = {}
-    for (const key of Object.keys(edits) as DraftKey[]) {
-      if (key === 'authors') {
-        input.authors = values.authors
-          .split(',')
-          .map((author) => author.trim())
-          .filter(Boolean)
-      } else if (key === 'year' || key === 'month') {
-        input[key] = optionalNumber(values[key])
-      } else {
-        input[key] = values[key]
-      }
-    }
-    if (Object.keys(input).length > 0) {
-      onEdit(input)
-      setEdits({})
-    }
+  if (paper.month === null) {
+    return { dateTime: String(paper.year), label: String(paper.year) }
   }
-
-  return (
-    <section aria-label={`Controls for ${paper.title}`}>
-      <form aria-label={`Edit metadata for ${paper.title}`} onSubmit={submitMetadata}>
-        <label>Title<input name="title" value={values.title} onChange={(event) => updateDraft('title', event.target.value)} required /></label>
-        <label>Authors<input name="authors" value={values.authors} onChange={(event) => updateDraft('authors', event.target.value)} /></label>
-        <label>Year<input name="year" type="number" min="1600" max="2200" value={values.year} onChange={(event) => updateDraft('year', event.target.value)} /></label>
-        <label>Month<input name="month" type="number" min="1" max="12" value={values.month} onChange={(event) => updateDraft('month', event.target.value)} /></label>
-        <label>Summary<textarea name="summary" value={values.summary} onChange={(event) => updateDraft('summary', event.target.value)} /></label>
-        <label>Link<input name="link" type="url" value={values.link} onChange={(event) => updateDraft('link', event.target.value)} required /></label>
-        <button type="submit">Save paper</button>
-      </form>
-      {paper.review ? (
-        <form aria-label={`Edit review for ${paper.title}`} onSubmit={onReviewEdit}>
-          {Object.entries(paper.review).map(([key, value]) => (
-            <label key={key}>
-              {key}
-              <textarea name={key} defaultValue={value} />
-            </label>
-          ))}
-          <button type="submit">Save review</button>
-        </form>
-      ) : null}
-      {paper.processing_status === 'failed' || paper.processing_status === 'cancelled' ? (
-        <button type="button" onClick={onRetry}>Retry</button>
-      ) : null}
-      {paper.review ? (
-        <button type="button" onClick={onRegenerate}>Regenerate review</button>
-      ) : null}
-      <button type="button" onClick={onDelete}>Delete paper</button>
-    </section>
-  )
-}
-
-function paperDraft(paper: Paper): Draft {
   return {
-    title: paper.title,
-    authors: paper.authors.join(', '),
-    year: paper.year === null ? '' : String(paper.year),
-    month: paper.month === null ? '' : String(paper.month),
-    summary: paper.summary,
-    link: paper.link,
+    dateTime: `${paper.year}-${String(paper.month).padStart(2, '0')}`,
+    label: `${monthFormatter.format(new Date(Date.UTC(paper.year, paper.month - 1)))} ${paper.year}`,
   }
 }
 
-function optionalNumber(value: string) {
-  const normalized = value.trim()
-  return normalized ? Number(normalized) : null
+function getAuthorLabel(authors: string[]) {
+  if (authors.length === 0) return 'Authors not listed'
+  if (authors.length === 1) return authors[0]
+  return `${authors[0]} +${authors.length - 1}`
+}
+
+function getPaperStatus(paper: Paper) {
+  const raw = paper.processing_status ?? (paper.review ? 'reviewed' : 'processing')
+  if (raw === 'reviewed' || raw === 'completed') {
+    return { label: 'Reviewed', tone: 'success' }
+  }
+  if (raw === 'failed' || raw === 'cancelled') {
+    return { label: raw === 'failed' ? 'Failed' : 'Cancelled', tone: 'danger' }
+  }
+  if (raw === 'queued') return { label: 'Queued', tone: 'neutral' }
+  return { label: 'Processing', tone: 'info' }
+}
+
+function getPaperPreview(paper: Paper): {
+  kind: 'summary' | 'processing' | 'failed'
+  label: string
+  text: string
+} {
+  const summary = paper.plain_language_summary?.trim() || paper.review?.coreIdea.trim()
+  if (summary) {
+    return { kind: 'summary', label: 'Summary', text: summary }
+  }
+
+  const failed =
+    paper.processing_status === 'failed' || paper.processing_status === 'cancelled'
+  if (failed) {
+    return {
+      kind: 'failed',
+      label: paper.processing_status === 'cancelled' ? 'Cancelled' : 'Failed',
+      text: paper.error?.trim() || 'A plain-language summary could not be created.',
+    }
+  }
+
+  return {
+    kind: 'processing',
+    label: 'Processing',
+    text: 'The plain-language summary will appear when this paper has been reviewed.',
+  }
 }

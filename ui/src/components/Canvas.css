@@ -1,12 +1,60 @@
-.react-flow__handle {
-  opacity: 0;
+.research-canvas {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  height: 100svh;
+  overflow: hidden;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+}
+
+.research-canvas .react-flow__renderer {
+  background: hsl(var(--background));
+}
+
+.research-canvas .react-flow__background pattern circle {
+  fill: hsl(var(--muted-foreground) / 0.22);
+}
+
+.research-canvas .react-flow__edge-path {
+  stroke: hsl(var(--muted-foreground) / 0.64);
+  stroke-width: 1.25;
+}
+
+.research-canvas .react-flow__arrowhead polyline {
+  stroke: hsl(var(--muted-foreground) / 0.72);
+  fill: hsl(var(--muted-foreground) / 0.72);
+}
+
+.research-canvas .react-flow__controls,
+.research-canvas .react-flow__minimap {
+  overflow: hidden;
+  background: hsl(var(--background) / 0.94);
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.625rem;
+  box-shadow: 0 4px 16px hsl(var(--foreground) / 0.06);
+}
+
+.research-canvas .react-flow__controls-button {
+  color: hsl(var(--foreground));
+  background: transparent;
+  border-color: hsl(var(--border));
+}
+
+.research-canvas .react-flow__controls-button:hover {
+  background: hsl(var(--muted));
+}
+
+.canvas__relayout {
+  background: hsl(var(--background) / 0.94);
+  box-shadow: 0 2px 10px hsl(var(--foreground) / 0.06);
 }
 
 .canvas__interaction {
   position: absolute;
-  right: 15px;
-  bottom: 15px;
-  left: 15px;
+  right: 0.9375rem;
+  bottom: 0.9375rem;
+  left: 0.9375rem;
   display: flex;
   justify-content: center;
   pointer-events: none;

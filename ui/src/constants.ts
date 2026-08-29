@@ -1,6 +1,9 @@
 export const constants = {
   API_BASE_URL: import.meta.env.VITE_API_BASE_URL ?? '',
+  CANVAS_CHAT_ENABLED: import.meta.env.VITE_CANVAS_CHAT_ENABLED === 'true',
   LAST_CANVAS_ID_STORAGE_KEY: 'research-map:last-canvas-id',
+  SIDEBAR_OPEN_STORAGE_KEY: 'research-map:sidebar-open',
+  TRUEFORGE_UI_URL: import.meta.env.VITE_TRUEFORGE_UI_URL ?? 'http://localhost:8790',
   PAPER_NODE_DEFAULT_WIDTH: 320,
   PAPER_NODE_HORIZONTAL_GAP: 160,
   RUN_EVENT_TYPES: [

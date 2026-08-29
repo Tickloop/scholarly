@@ -1,0 +1,18 @@
+import { useSyncExternalStore } from 'react'
+
+const MOBILE_BREAKPOINT = 768
+const MOBILE_QUERY = `(max-width: ${MOBILE_BREAKPOINT - 1}px)`
+
+function subscribeToViewport(onChange: () => void) {
+  const mediaQuery = window.matchMedia(MOBILE_QUERY)
+  mediaQuery.addEventListener('change', onChange)
+  return () => mediaQuery.removeEventListener('change', onChange)
+}
+
+function getViewportSnapshot() {
+  return window.matchMedia(MOBILE_QUERY).matches
+}
+
+export function useIsMobile() {
+  return useSyncExternalStore(subscribeToViewport, getViewportSnapshot, () => false)
+}

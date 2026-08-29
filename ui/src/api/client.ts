@@ -234,3 +234,90 @@ export function subscribeToRunEvents(
 
   return () => source.close()
 }
+
+export function subscribeToCanvasEvents(handlers: {
+  onEvent: (event: {
+    canvas_id: string
+    change_type: string
+    updated_at: string
+  }) => void
+  onOpen?: () => void
+}) {
+  const url = `${constants.API_BASE_URL}/api/v1/canvases/events`
+  const minimumDelay = 500
+  const maximumDelay = 10_000
+  let source: EventSource | undefined
+  let retryTimer: ReturnType<typeof setTimeout> | undefined
+  let reconnectAttempt = 0
+  let disposed = false
+
+  function receiveEvent(message: MessageEvent<string>) {
+    if (disposed) return
+    try {
+      const event = JSON.parse(message.data) as Partial<{
+        canvas_id: string
+        change_type: string
+        updated_at: string
+      }>
+      if (
+        typeof event.canvas_id !== 'string' ||
+        typeof event.change_type !== 'string' ||
+        typeof event.updated_at !== 'string'
+      ) return
+      handlers.onEvent(event as {
+        canvas_id: string
+        change_type: string
+        updated_at: string
+      })
+    } catch {
+      // A malformed frame should not take down the reconnect manager.
+    }
+  }
+
+  function scheduleReconnect() {
+    if (disposed || retryTimer || source) return
+    const baseDelay = Math.min(
+      minimumDelay * 2 ** reconnectAttempt,
+      maximumDelay,
+    )
+    reconnectAttempt += 1
+    const jitter = baseDelay * 0.2 * Math.random()
+    const delay = Math.min(maximumDelay, Math.round(baseDelay + jitter))
+    retryTimer = setTimeout(() => {
+      retryTimer = undefined
+      connect()
+    }, delay)
+  }
+
+  function connect() {
+    if (disposed || source) return
+    const nextSource = new EventSource(url)
+    source = nextSource
+
+    nextSource.addEventListener(
+      'canvas.changed',
+      receiveEvent as EventListener,
+    )
+    nextSource.onopen = () => {
+      if (disposed || source !== nextSource) return
+      reconnectAttempt = 0
+      handlers.onOpen?.()
+    }
+    nextSource.onerror = () => {
+      if (disposed || source !== nextSource) return
+      nextSource.close()
+      source = undefined
+      scheduleReconnect()
+    }
+  }
+
+  connect()
+
+  return () => {
+    disposed = true
+    if (retryTimer) clearTimeout(retryTimer)
+    retryTimer = undefined
+    source?.close()
+    source = undefined
+  }
+}

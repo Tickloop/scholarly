@@ -15,7 +15,7 @@ import type {
 
 export type PaperCanvasNode = Node<{
   paper: Paper
-  onActivate?: () => void
+  onActivate?: (origin?: HTMLElement) => void
 }, 'paper'>
 
 export type RelationshipEdge = Edge<
@@ -28,12 +28,12 @@ export type RelationshipEdge = Edge<
 
 export type PaperDetailProps = {
   paper: Paper
-  review: PaperReview
+  review?: PaperReview
 }
 
 export type PaperReviewSectionProps = {
   title: string
-  content: string
+  content?: string | null
 }
 
 export type RelationshipDetailProps = {
@@ -79,4 +79,5 @@ export type CanvasDrawerProps = {
   onSelect: (canvasId?: CanvasId) => void
   onRename: (canvasId: CanvasId, name: string) => void | Promise<void>
   onDelete: (canvasId: CanvasId) => void | Promise<void>
+  onRefresh?: () => void | Promise<void>
 }

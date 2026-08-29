@@ -4,40 +4,6 @@
  */
 
 export interface paths {
-    "/api/v1/health": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Health */
-        get: operations["health_api_v1_health_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/health/dependencies": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Health Dependencies */
-        get: operations["health_dependencies_api_v1_health_dependencies_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/canvases": {
         parameters: {
             query?: never;
@@ -50,6 +16,23 @@ export interface paths {
         put?: never;
         /** Create Canvas */
         post: operations["create_canvas_api_v1_canvases_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/canvases/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Stream Canvas Events */
+        get: operations["stream_canvas_events_api_v1_canvases_events_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -75,7 +58,7 @@ export interface paths {
         patch: operations["rename_canvas_api_v1_canvases__canvas_id__patch"];
         trace?: never;
     };
-    "/api/v1/canvases/{canvas_id}/layout/reset": {
+    "/api/v1/canvases/{canvas_id}/agents/runs": {
         parameters: {
             query?: never;
             header?: never;
@@ -84,25 +67,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Reset Canvas Layout */
-        post: operations["reset_canvas_layout_api_v1_canvases__canvas_id__layout_reset_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/canvases/{canvas_id}/layout": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Persist Canvas Layout */
-        put: operations["persist_canvas_layout_api_v1_canvases__canvas_id__layout_put"];
-        post?: never;
+        /** Start Direct Agent Run */
+        post: operations["start_direct_agent_run_api_v1_canvases__canvas_id__agents_runs_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -126,7 +92,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/canvases/{canvas_id}/agents/runs": {
+    "/api/v1/canvases/{canvas_id}/layout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Persist Canvas Layout */
+        put: operations["persist_canvas_layout_api_v1_canvases__canvas_id__layout_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/canvases/{canvas_id}/layout/reset": {
         parameters: {
             query?: never;
             header?: never;
@@ -135,8 +118,26 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Start Direct Agent Run */
-        post: operations["start_direct_agent_run_api_v1_canvases__canvas_id__agents_runs_post"];
+        /** Reset Canvas Layout */
+        post: operations["reset_canvas_layout_api_v1_canvases__canvas_id__layout_reset_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/canvases/{canvas_id}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Messages */
+        get: operations["get_messages_api_v1_canvases__canvas_id__messages_get"];
+        put?: never;
+        /** Post Message */
+        post: operations["post_message_api_v1_canvases__canvas_id__messages_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -154,40 +155,6 @@ export interface paths {
         put?: never;
         /** Submit Paper Link */
         post: operations["submit_paper_link_api_v1_canvases__canvas_id__papers_from_link_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/canvases/{canvas_id}/papers/{paper_id}/retry": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Retry Paper */
-        post: operations["retry_paper_api_v1_canvases__canvas_id__papers__paper_id__retry_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/canvases/{canvas_id}/papers/{paper_id}/review/regenerate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Regenerate Review */
-        post: operations["regenerate_review_api_v1_canvases__canvas_id__papers__paper_id__review_regenerate_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -212,6 +179,23 @@ export interface paths {
         patch: operations["update_paper_api_v1_canvases__canvas_id__papers__paper_id__patch"];
         trace?: never;
     };
+    "/api/v1/canvases/{canvas_id}/papers/{paper_id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Retry Paper */
+        post: operations["retry_paper_api_v1_canvases__canvas_id__papers__paper_id__retry_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/canvases/{canvas_id}/papers/{paper_id}/review": {
         parameters: {
             query?: never;
@@ -227,6 +211,23 @@ export interface paths {
         head?: never;
         /** Update Review */
         patch: operations["update_review_api_v1_canvases__canvas_id__papers__paper_id__review_patch"];
+        trace?: never;
+    };
+    "/api/v1/canvases/{canvas_id}/papers/{paper_id}/review/regenerate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Regenerate Review */
+        post: operations["regenerate_review_api_v1_canvases__canvas_id__papers__paper_id__review_regenerate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/canvases/{canvas_id}/relationships/{relationship_id}": {
@@ -264,18 +265,34 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/canvases/{canvas_id}/messages": {
+    "/api/v1/health": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get Messages */
-        get: operations["get_messages_api_v1_canvases__canvas_id__messages_get"];
+        /** Health */
+        get: operations["health_api_v1_health_get"];
         put?: never;
-        /** Post Message */
-        post: operations["post_message_api_v1_canvases__canvas_id__messages_post"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/health/dependencies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Health Dependencies */
+        get: operations["health_dependencies_api_v1_health_dependencies_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -316,6 +333,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/runs/{run_id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel Run */
+        post: operations["cancel_run_api_v1_runs__run_id__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/runs/{run_id}/event-log": {
         parameters: {
             query?: never;
@@ -350,40 +384,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/runs/{run_id}/timeline": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Run Timeline */
-        get: operations["get_run_timeline_api_v1_runs__run_id__timeline_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/runs/{run_id}/cancel": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Cancel Run */
-        post: operations["cancel_run_api_v1_runs__run_id__cancel_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/runs/{run_id}/retry": {
         parameters: {
             query?: never;
@@ -401,31 +401,48 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/runs/{run_id}/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Run Timeline */
+        get: operations["get_run_timeline_api_v1_runs__run_id__timeline_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** AgentRunDetail */
         AgentRunDetail: {
-            /** Id */
-            id: string;
-            /** Canvas Id */
-            canvas_id: string;
             /** Agent Name */
             agent_name: string;
+            /** Canvas Id */
+            canvas_id: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Error */
+            error?: string | null;
+            /** Id */
+            id: string;
             /** Status */
             status: string;
             /** Trueforge Session Id */
             trueforge_session_id?: string | null;
             /** Trueforge Turn Id */
             trueforge_turn_id?: string | null;
-            /** Error */
-            error?: string | null;
-            /**
-             * Created At
-             * Format: date-time
-             */
-            created_at: string;
             /**
              * Updated At
              * Format: date-time
@@ -434,34 +451,34 @@ export interface components {
         };
         /** AgentRunEventRead */
         AgentRunEventRead: {
-            /** Id */
-            id: string;
-            /** Run Id */
-            run_id: string;
             /** Canvas Id */
             canvas_id: string;
-            /** Type */
-            type: string;
-            /** Payload */
-            payload: {
-                [key: string]: unknown;
-            };
             /**
              * Created At
              * Format: date-time
              */
             created_at: string;
+            /** Id */
+            id: string;
+            /** Payload */
+            payload: {
+                [key: string]: unknown;
+            };
+            /** Run Id */
+            run_id: string;
+            /** Type */
+            type: string;
         };
         /** AgentRunRead */
         AgentRunRead: {
-            /** Id */
-            id: string;
             /** Canvas Id */
             canvas_id: string;
-            /** Status */
-            status: string;
+            /** Id */
+            id: string;
             /** Paper Id */
             paper_id?: string | null;
+            /** Status */
+            status: string;
         };
         /** CanvasCreate */
         CanvasCreate: {
@@ -485,16 +502,6 @@ export interface components {
         };
         /** CanvasSummary */
         CanvasSummary: {
-            /** Id */
-            id: string;
-            /** Name */
-            name: string;
-            /** Research Goal */
-            research_goal: string;
-            /** Research Brief */
-            research_brief?: {
-                [key: string]: unknown;
-            } | null;
             /** Build Status */
             build_status: string;
             /**
@@ -502,6 +509,16 @@ export interface components {
              * Format: date-time
              */
             created_at: string;
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Research Brief */
+            research_brief?: {
+                [key: string]: unknown;
+            } | null;
+            /** Research Goal */
+            research_goal: string;
             /**
              * Updated At
              * Format: date-time
@@ -522,10 +539,19 @@ export interface components {
         };
         /** ChatMessageRead */
         ChatMessageRead: {
-            /** Id */
-            id: string;
+            /** Agent Name */
+            agent_name: string;
             /** Canvas Id */
             canvas_id: string;
+            /** Content */
+            content: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Id */
+            id: string;
             /** Paper Id */
             paper_id?: string | null;
             /**
@@ -533,32 +559,18 @@ export interface components {
              * @enum {string}
              */
             role: "user" | "assistant";
-            /** Agent Name */
-            agent_name: string;
-            /** Content */
-            content: string;
             /** Status */
             status: string;
-            /**
-             * Created At
-             * Format: date-time
-             */
-            created_at: string;
         };
         /** ChatSubmission */
         ChatSubmission: {
             message: components["schemas"]["ChatMessageRead"];
-            run?: components["schemas"]["AgentRunRead"] | null;
             /** Queued */
             queued: boolean;
+            run?: components["schemas"]["AgentRunRead"] | null;
         };
         /** DependencyHealthRead */
         DependencyHealthRead: {
-            /**
-             * Status
-             * @enum {string}
-             */
-            status: "ok" | "degraded";
             /** Academic Apis */
             academic_apis: {
                 [key: string]: string;
@@ -567,6 +579,11 @@ export interface components {
             local_storage: {
                 [key: string]: number | string;
             };
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "ok" | "degraded";
         };
         /** DirectAgentCreate */
         DirectAgentCreate: {
@@ -575,10 +592,10 @@ export interface components {
              * @enum {string}
              */
             agent: "main" | "discovery" | "reviewer" | "connection";
-            /** Prompt */
-            prompt: string;
             /** Paper Ids */
             paper_ids?: string[];
+            /** Prompt */
+            prompt: string;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -587,35 +604,39 @@ export interface components {
         };
         /** HealthRead */
         HealthRead: {
-            /** Status */
-            status: string;
             /** Api */
             api: string;
+            /** Brightdata Api Key Configured */
+            brightdata_api_key_configured: boolean;
+            /** Brightdata Mcp Configured */
+            brightdata_mcp_configured: boolean;
             /** Database */
             database: string;
-            /** Trueforge */
-            trueforge: string;
-            /** Trueforge Url */
-            trueforge_url: string;
-            /** Openrouter Configured */
-            openrouter_configured: boolean;
+            /** Openai Configured */
+            openai_configured: boolean;
             /** Required Configuration */
             required_configuration: string;
             /** Research Providers */
             research_providers: {
                 [key: string]: string;
             };
+            /** Status */
+            status: string;
+            /** Trueforge */
+            trueforge: string;
+            /** Trueforge Url */
+            trueforge_url: string;
         };
         /** PaperLayoutPosition */
         PaperLayoutPosition: {
             /** Paper Id */
             paper_id: string;
+            /** Pinned */
+            pinned: boolean;
             /** X */
             x: number;
             /** Y */
             y: number;
-            /** Pinned */
-            pinned: boolean;
         };
         /** PaperLinkCreate */
         PaperLinkCreate: {
@@ -628,28 +649,33 @@ export interface components {
         };
         /** PaperRead */
         PaperRead: {
-            /** Id */
-            id: string;
-            /** Title */
-            title: string;
             /** Authors */
             authors: string[];
-            /** Year */
-            year: number | null;
-            /** Month */
-            month: number | null;
-            /** Summary */
-            summary: string;
-            /** Link */
-            link: string;
-            /** Processing Status */
-            processing_status: string;
             /** Error */
             error?: string | null;
+            /** Id */
+            id: string;
+            /** Link */
+            link: string;
+            /** Month */
+            month: number | null;
+            /**
+             * Pinned
+             * @default false
+             */
+            pinned: boolean;
+            /** Plain Language Summary */
+            plain_language_summary?: string | null;
+            /** Processing Status */
+            processing_status: string;
             /** Review */
             review?: {
                 [key: string]: string;
             } | null;
+            /** Summary */
+            summary: string;
+            /** Title */
+            title: string;
             /**
              * X
              * @default 0
@@ -660,44 +686,45 @@ export interface components {
              * @default 0
              */
             y: number;
-            /**
-             * Pinned
-             * @default false
-             */
-            pinned: boolean;
+            /** Year */
+            year: number | null;
         };
         /** PaperUpdate */
         PaperUpdate: {
-            /** Title */
-            title?: string | null;
             /** Authors */
             authors?: string[] | null;
-            /** Year */
-            year?: number | null;
-            /** Month */
-            month?: number | null;
-            /** Summary */
-            summary?: string | null;
             /** Link */
             link?: string | null;
+            /** Month */
+            month?: number | null;
+            /** Pinned */
+            pinned?: boolean | null;
+            /** Summary */
+            summary?: string | null;
+            /** Title */
+            title?: string | null;
             /** X */
             x?: number | null;
             /** Y */
             y?: number | null;
-            /** Pinned */
-            pinned?: boolean | null;
+            /** Year */
+            year?: number | null;
         };
         /** RelationshipEdit */
         RelationshipEdit: {
-            /** Label */
-            label?: string | null;
             /** Explanation */
             explanation?: string | null;
+            /** Label */
+            label?: string | null;
         };
         /** RelationshipRead */
         RelationshipRead: {
+            /** Explanation */
+            explanation: string;
             /** Id */
             id: string;
+            /** Label */
+            label: string;
             /** Source */
             source: string;
             /** Target */
@@ -707,10 +734,6 @@ export interface components {
              * @enum {string}
              */
             type: "extends" | "contradicts" | "same_benchmark" | "uses_method" | "cites" | "related";
-            /** Label */
-            label: string;
-            /** Explanation */
-            explanation: string;
         };
         /** ReviewEdit */
         ReviewEdit: {
@@ -721,13 +744,13 @@ export interface components {
         };
         /** RunTimelineRead */
         RunTimelineRead: {
-            run: components["schemas"]["AgentRunDetail"];
-            /** Events */
-            events: components["schemas"]["AgentRunEventRead"][];
-            /** Tool Invocations */
-            tool_invocations: components["schemas"]["ToolInvocationRead"][];
             /** Duration Ms */
             duration_ms?: number | null;
+            /** Events */
+            events: components["schemas"]["AgentRunEventRead"][];
+            run: components["schemas"]["AgentRunDetail"];
+            /** Tool Invocations */
+            tool_invocations: components["schemas"]["ToolInvocationRead"][];
             /** Usage */
             usage?: {
                 [key: string]: number;
@@ -735,27 +758,27 @@ export interface components {
         };
         /** ToolInvocationRead */
         ToolInvocationRead: {
-            /** Id */
-            id: string;
-            /** Tool Name */
-            tool_name: string;
             /** Arguments */
             arguments: {
                 [key: string]: unknown;
             };
-            /** Result */
-            result?: unknown | null;
-            /** Status */
-            status: string;
+            /** Completed At */
+            completed_at?: string | null;
             /** Error */
             error?: string | null;
+            /** Id */
+            id: string;
+            /** Result */
+            result?: unknown | null;
             /**
              * Started At
              * Format: date-time
              */
             started_at: string;
-            /** Completed At */
-            completed_at?: string | null;
+            /** Status */
+            status: string;
+            /** Tool Name */
+            tool_name: string;
         };
         /** UndoRead */
         UndoRead: {
@@ -785,46 +808,6 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    health_api_v1_health_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HealthRead"];
-                };
-            };
-        };
-    };
-    health_dependencies_api_v1_health_dependencies_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DependencyHealthRead"];
-                };
-            };
-        };
-    };
     list_canvases_api_v1_canvases_get: {
         parameters: {
             query?: never;
@@ -874,6 +857,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    stream_canvas_events_api_v1_canvases_events_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
         };
@@ -973,7 +976,42 @@ export interface operations {
             };
         };
     };
-    reset_canvas_layout_api_v1_canvases__canvas_id__layout_reset_post: {
+    start_direct_agent_run_api_v1_canvases__canvas_id__agents_runs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                canvas_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DirectAgentCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentRunRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    start_canvas_build_api_v1_canvases__canvas_id__builds_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -985,12 +1023,12 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Successful Response */
-            200: {
+            202: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CanvasSnapshot"];
+                    "application/json": components["schemas"]["AgentRunRead"];
                 };
             };
             /** @description Validation Error */
@@ -1039,7 +1077,7 @@ export interface operations {
             };
         };
     };
-    start_canvas_build_api_v1_canvases__canvas_id__builds_post: {
+    reset_canvas_layout_api_v1_canvases__canvas_id__layout_reset_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1051,12 +1089,12 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Successful Response */
-            202: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AgentRunRead"];
+                    "application/json": components["schemas"]["CanvasSnapshot"];
                 };
             };
             /** @description Validation Error */
@@ -1070,7 +1108,38 @@ export interface operations {
             };
         };
     };
-    start_direct_agent_run_api_v1_canvases__canvas_id__agents_runs_post: {
+    get_messages_api_v1_canvases__canvas_id__messages_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                canvas_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatMessageRead"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    post_message_api_v1_canvases__canvas_id__messages_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1081,17 +1150,17 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["DirectAgentCreate"];
+                "application/json": components["schemas"]["ChatMessageCreate"];
             };
         };
         responses: {
             /** @description Successful Response */
-            202: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AgentRunRead"];
+                    "application/json": components["schemas"]["ChatSubmission"];
                 };
             };
             /** @description Validation Error */
@@ -1119,70 +1188,6 @@ export interface operations {
                 "application/json": components["schemas"]["PaperLinkCreate"];
             };
         };
-        responses: {
-            /** @description Successful Response */
-            202: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AgentRunRead"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    retry_paper_api_v1_canvases__canvas_id__papers__paper_id__retry_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                canvas_id: string;
-                paper_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            202: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AgentRunRead"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    regenerate_review_api_v1_canvases__canvas_id__papers__paper_id__review_regenerate_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                canvas_id: string;
-                paper_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
         responses: {
             /** @description Successful Response */
             202: {
@@ -1272,6 +1277,38 @@ export interface operations {
             };
         };
     };
+    retry_paper_api_v1_canvases__canvas_id__papers__paper_id__retry_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                canvas_id: string;
+                paper_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentRunRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     update_review_api_v1_canvases__canvas_id__papers__paper_id__review_patch: {
         parameters: {
             query?: never;
@@ -1295,6 +1332,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CanvasSnapshot"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    regenerate_review_api_v1_canvases__canvas_id__papers__paper_id__review_regenerate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                canvas_id: string;
+                paper_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentRunRead"];
                 };
             };
             /** @description Validation Error */
@@ -1411,13 +1480,11 @@ export interface operations {
             };
         };
     };
-    get_messages_api_v1_canvases__canvas_id__messages_get: {
+    health_api_v1_health_get: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                canvas_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -1428,34 +1495,19 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ChatMessageRead"][];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["HealthRead"];
                 };
             };
         };
     };
-    post_message_api_v1_canvases__canvas_id__messages_post: {
+    health_dependencies_api_v1_health_dependencies_get: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                canvas_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ChatMessageCreate"];
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {
@@ -1463,16 +1515,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ChatSubmission"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/json": components["schemas"]["DependencyHealthRead"];
                 };
             };
         };
@@ -1526,6 +1569,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AgentRunDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancel_run_api_v1_runs__run_id__cancel_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentRunRead"];
                 };
             };
             /** @description Validation Error */
@@ -1605,68 +1679,6 @@ export interface operations {
             };
         };
     };
-    get_run_timeline_api_v1_runs__run_id__timeline_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                run_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RunTimelineRead"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    cancel_run_api_v1_runs__run_id__cancel_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                run_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AgentRunRead"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
     retry_run_api_v1_runs__run_id__retry_post: {
         parameters: {
             query?: never;
@@ -1685,6 +1697,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AgentRunRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_run_timeline_api_v1_runs__run_id__timeline_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunTimelineRead"];
                 };
             };
             /** @description Validation Error */

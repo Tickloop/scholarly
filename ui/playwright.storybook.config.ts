@@ -4,6 +4,7 @@ const port = 43118
 
 export default defineConfig({
   testDir: './storybook-e2e',
+  timeout: 120_000,
   fullyParallel: false,
   workers: 1,
   retries: 0,

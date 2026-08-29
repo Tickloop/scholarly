@@ -1,3 +1,70 @@
+.relationship-edge__label-wrapper {
+  position: absolute;
+  z-index: 4;
+  pointer-events: all;
+}
+
+.relationship-edge__label {
+  max-width: 13rem;
+  padding: 0.3rem 0.625rem;
+  overflow: hidden;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--background) / 0.94);
+  border: 1px solid hsl(var(--border));
+  border-radius: 999px;
+  box-shadow: 0 1px 3px hsl(var(--foreground) / 0.06);
+  font: inherit;
+  font-size: 0.6875rem;
+  font-weight: 650;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+  transition:
+    color 150ms ease,
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+
+.relationship-edge__label:hover,
+.relationship-edge__label:focus-visible {
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+  border-color: hsl(var(--foreground) / 0.3);
+  outline: none;
+}
+
+.relationship-edge__label:focus-visible {
+  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.22);
+}
+
+.relationship-edge__preview {
+  width: min(22rem, calc(100vw - 2rem));
+}
+
 .relationship-detail {
-  border: 1px solid currentColor;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.relationship-detail p {
+  margin: 0;
+}
+
+.relationship-detail__label {
+  color: hsl(var(--foreground));
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.relationship-detail__explanation {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.8125rem;
+  line-height: 1.55;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .relationship-edge__label {
+    transition: none;
+  }
 }

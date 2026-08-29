@@ -2,6 +2,7 @@ import { expect, fn, userEvent, within } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import { CanvasDrawer } from '@/components/CanvasDrawer'
+import { SidebarProvider } from '@/components/ui/sidebar'
 
 const canvases = [
   {
@@ -32,7 +33,17 @@ const meta = {
     onSelect: fn(),
     onRename: fn(),
     onDelete: fn(),
+    onRefresh: fn(),
   },
+  decorators: [
+    (Story) => (
+      <SidebarProvider>
+        <Story />
+        <main className="min-h-svh flex-1 bg-background" />
+      </SidebarProvider>
+    ),
+  ],
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta<typeof CanvasDrawer>
 
 export default meta
@@ -44,11 +55,16 @@ export const Selected: Story = {
     await expect(
       canvas.getByRole('navigation', { name: 'Canvas switcher' }),
     ).toBeVisible()
-    await userEvent.click(canvas.getByText('Canvases'))
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Canvas actions for Transformer history' }),
+    )
+    await userEvent.click(
+      within(document.body).getByRole('menuitem', { name: 'Rename' }),
+    )
     const input = canvas.getByRole('textbox', { name: 'Canvas name' })
     await userEvent.clear(input)
     await userEvent.type(input, 'Renamed canvas')
-    await userEvent.click(canvas.getByRole('button', { name: 'Rename' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Save' }))
     await expect(args.onRename).toHaveBeenCalledWith(
       'canvas-1',
       'Renamed canvas',
@@ -56,6 +72,11 @@ export const Selected: Story = {
   },
 }
 
-export const NewCanvas: Story = {
-  args: { selectedCanvasId: undefined },
+export const Empty: Story = {
+  args: { canvases: [], selectedCanvasId: undefined },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByText('No canvases yet.')).toBeVisible()
+    await expect(canvas.getByText('Create one in TrueForge.')).toBeVisible()
+  },
 }

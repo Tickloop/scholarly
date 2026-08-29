@@ -20,6 +20,7 @@ import {
   sendMessage,
   startCanvasBuild,
   submitPaperLink,
+  subscribeToCanvasEvents,
   subscribeToRunEvents,
   undoCanvasChange,
   updateCanvasLayout,
@@ -30,6 +31,12 @@ import {
 import { Canvas } from '@/components/Canvas'
 import { CanvasDrawer } from '@/components/CanvasDrawer'
 import { CanvasLauncher } from '@/components/CanvasLauncher'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from '@/components/ui/sidebar'
 import { constants } from '@/constants'
 import { CanvasProvider } from '@/context/CanvasContext'
 import type {
@@ -68,6 +75,9 @@ function App() {
   const [activeAgent, setActiveAgent] = useState<string>()
   const [activeRun, setActiveRun] = useState<AgentRun>()
   const [undoToken, setUndoToken] = useState<string>()
+  const [sidebarOpen, setSidebarOpen] = useState(
+    () => localStorage.getItem(constants.SIDEBAR_OPEN_STORAGE_KEY) !== 'false',
+  )
   const runSubscriptions = useRef(new Map<string, RunSubscription>())
   const activeRunKey = useRef<string | undefined>(undefined)
   const activeRunPurpose = useRef<RunPurpose | undefined>(undefined)
@@ -100,7 +110,9 @@ function App() {
       setRunStatusLabel('Canvas build')
       setActiveRun(persistedBuildRun)
       activeRunPurpose.current = persistedBuildRun ? 'build' : undefined
-      setMessages(await listMessages(canvasId))
+      setMessages(
+        constants.CANVAS_CHAT_ENABLED ? await listMessages(canvasId) : [],
+      )
       setSelectedPaperId(undefined)
       setSelectedRelationshipId(undefined)
       localStorage.setItem(constants.LAST_CANVAS_ID_STORAGE_KEY, canvasId)
@@ -141,6 +153,47 @@ function App() {
       closeAllRunStreams()
     }
   }, [closeAllRunStreams, loadCanvas])
+
+  const refreshWorkspace = useCallback(async (changedCanvasId?: string) => {
+    try {
+      const nextCanvases = await listCanvases()
+      setCanvases(nextCanvases)
+
+      const currentCanvasId = activeCanvasId.current
+      if (currentCanvasId) {
+        const currentStillExists = nextCanvases.some(
+          (canvas) => canvas.id === currentCanvasId,
+        )
+        if (!currentStillExists) {
+          if (nextCanvases[0]) await loadCanvas(nextCanvases[0].id)
+          else {
+            closeAllRunStreams()
+            setSnapshot(undefined)
+            setMessages([])
+            localStorage.removeItem(constants.LAST_CANVAS_ID_STORAGE_KEY)
+          }
+          return
+        }
+
+        if (!changedCanvasId || changedCanvasId === currentCanvasId) {
+          setSnapshot(await getCanvas(currentCanvasId))
+        }
+        return
+      }
+
+      if (nextCanvases[0]) await loadCanvas(nextCanvases[0].id)
+      setError(undefined)
+    } catch (refreshError) {
+      setError(getErrorMessage(refreshError))
+    }
+  }, [closeAllRunStreams, loadCanvas])
+
+  useEffect(() => {
+    return subscribeToCanvasEvents({
+      onEvent: (event) => void refreshWorkspace(event.canvas_id),
+      onOpen: () => void refreshWorkspace(),
+    })
+  }, [refreshWorkspace])
 
   const refreshCanvasForEvent = useCallback(
     async (event: RunEvent, key: string, purpose: RunPurpose) => {
@@ -573,57 +626,96 @@ function App() {
       removeRelationship={(relationshipId) => void handleDeleteRelationship(relationshipId)}
       persistLayout={handlePersistLayout}
     >
-      <Canvas
-        controls={
-          <CanvasDrawer
-            key={snapshot?.canvas.id ?? 'new-canvas'}
-            canvases={canvases}
-            selectedCanvasId={snapshot?.canvas.id}
-            isBusy={isBusy}
-            onSelect={handleSelectCanvas}
-            onRename={handleRenameCanvas}
-            onDelete={handleDeleteCanvas}
-          />
-        }
-        selectedPaperId={selectedPaperId}
-        selectedRelationshipId={selectedRelationshipId}
-        onPaperSelect={(paperId) => {
-          setSelectedRelationshipId(undefined)
-          setSelectedPaperId(paperId)
+      <SidebarProvider
+        open={sidebarOpen}
+        onOpenChange={(open) => {
+          setSidebarOpen(open)
+          localStorage.setItem(constants.SIDEBAR_OPEN_STORAGE_KEY, String(open))
         }}
-        onRelationshipSelect={(relationshipId) => {
-          setSelectedPaperId(undefined)
-          setSelectedRelationshipId(relationshipId)
-        }}
-        onPaperLinkPaste={(url, position) => {
-          void handlePaperLink(url, position).catch(() => undefined)
-        }}
-        onPaperMove={handlePaperMove}
-        onRelayout={snapshot ? () => void handleRelayout() : undefined}
       >
-        <CanvasLauncher
-          canvas={snapshot?.canvas}
-          papers={snapshot?.papers ?? []}
-          messages={messages}
+        <CanvasDrawer
+          key={snapshot?.canvas.id ?? 'new-canvas'}
+          canvases={canvases}
           selectedCanvasId={snapshot?.canvas.id}
-          selectedPaper={snapshot?.papers.find((paper) => paper.id === selectedPaperId)}
-          activeAgent={activeAgent}
           isBusy={isBusy}
-          error={error}
-          runStatus={runStatus}
-          runStatusLabel={runStatusLabel}
-          onCreate={handleCreate}
-          onAddPaperLink={(url) => handlePaperLink(url)}
-          onSendMessage={handleSendMessage}
-          onClearPaper={() => setSelectedPaperId(undefined)}
-          onStop={activeRun && !isTerminalStatus(activeRun.status) ? handleStop : undefined}
-          onRetry={canRetryRun(activeRun, activeRunPurpose.current, snapshot)
-            ? handleRetryRun
-            : undefined}
-          onUndo={undoToken ? handleUndo : undefined}
+          onSelect={handleSelectCanvas}
+          onRename={handleRenameCanvas}
+          onDelete={handleDeleteCanvas}
+          onRefresh={() => refreshWorkspace()}
         />
-      </Canvas>
+        <SidebarInset className="relative min-h-svh min-w-0 overflow-hidden">
+          <SidebarTrigger className="absolute top-3 left-3 z-40 border bg-background shadow-sm md:hidden" />
+          {error ? (
+            <Alert variant="destructive" className="absolute top-3 left-1/2 z-40 w-[min(32rem,calc(100%-6rem))] -translate-x-1/2 bg-background shadow-md">
+              <AlertTitle>Canvas update failed</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          ) : null}
+          {snapshot ? (
+            <Canvas
+              selectedPaperId={selectedPaperId}
+              selectedRelationshipId={selectedRelationshipId}
+              onPaperSelect={(paperId) => {
+                setSelectedRelationshipId(undefined)
+                setSelectedPaperId(paperId)
+              }}
+              onRelationshipSelect={(relationshipId) => {
+                setSelectedPaperId(undefined)
+                setSelectedRelationshipId(relationshipId)
+              }}
+              onPaperLinkPaste={(url, position) => {
+                void handlePaperLink(url, position).catch(() => undefined)
+              }}
+              onPaperMove={handlePaperMove}
+              onRelayout={() => void handleRelayout()}
+            >
+              {constants.CANVAS_CHAT_ENABLED ? (
+                <CanvasLauncher
+                  canvas={snapshot.canvas}
+                  papers={snapshot.papers}
+                  messages={messages}
+                  selectedCanvasId={snapshot.canvas.id}
+                  selectedPaper={snapshot.papers.find((paper) => paper.id === selectedPaperId)}
+                  activeAgent={activeAgent}
+                  isBusy={isBusy}
+                  error={error}
+                  runStatus={runStatus}
+                  runStatusLabel={runStatusLabel}
+                  onCreate={handleCreate}
+                  onAddPaperLink={(url) => handlePaperLink(url)}
+                  onSendMessage={handleSendMessage}
+                  onClearPaper={() => setSelectedPaperId(undefined)}
+                  onStop={activeRun && !isTerminalStatus(activeRun.status) ? handleStop : undefined}
+                  onRetry={canRetryRun(activeRun, activeRunPurpose.current, snapshot)
+                    ? handleRetryRun
+                    : undefined}
+                  onUndo={undoToken ? handleUndo : undefined}
+                />
+              ) : null}
+            </Canvas>
+          ) : (
+            <EmptyCanvas isBusy={isBusy} />
+          )}
+        </SidebarInset>
+      </SidebarProvider>
     </CanvasProvider>
+  )
+}
+
+function EmptyCanvas({ isBusy }: { isBusy: boolean }) {
+  return (
+    <main className="flex min-h-svh items-center justify-center p-8" aria-label="Research canvas">
+      <div className="max-w-sm text-center">
+        <p className="text-base font-semibold">
+          {isBusy ? 'Loading canvases…' : 'No canvases yet.'}
+        </p>
+        {!isBusy ? (
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Create one in TrueForge.
+          </p>
+        ) : null}
+      </div>
+    </main>
   )
 }
 

@@ -1,15 +1,18 @@
 import {
   BaseEdge,
-  EdgeText,
-  EdgeToolbar,
+  EdgeLabelRenderer,
   getBezierPath,
   useInternalNode,
   type EdgeProps,
 } from '@xyflow/react'
-import type { FormEvent } from 'react'
+import { useId, useState, type FormEvent } from 'react'
 
 import { RelationshipDetail } from '@/components/RelationshipDetail'
-import { useCanvasActions } from '@/context/CanvasContext'
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card'
 import type { RelationshipEdge as RelationshipEdgeType } from '@/types'
 import { getEdgeParams } from '@/utils'
 
@@ -22,15 +25,10 @@ export function RelationshipEdge({
   style,
   interactionWidth,
   label,
-  labelStyle,
-  labelShowBg,
-  labelBgStyle,
-  labelBgPadding,
-  labelBgBorderRadius,
   data,
-  selected,
 }: EdgeProps<RelationshipEdgeType>) {
-  const actions = useCanvasActions()
+  const [previewOpen, setPreviewOpen] = useState(false)
+  const previewId = useId()
   const sourceNode = useInternalNode(source)
   const targetNode = useInternalNode(target)
 
@@ -52,6 +50,8 @@ export function RelationshipEdge({
     targetY,
     targetPosition,
   })
+  const relationship = data?.relationship
+  const visibleLabel = String(label ?? relationship?.label ?? 'Related')
 
   return (
     <>
@@ -63,58 +63,52 @@ export function RelationshipEdge({
         style={style}
         interactionWidth={interactionWidth}
       />
-      <EdgeText
-        x={labelX}
-        y={labelY}
-        label={label}
-        aria-label={`Relationship: ${String(label)}`}
-        role="button"
-        tabIndex={0}
-        labelStyle={labelStyle}
-        labelShowBg={labelShowBg}
-        labelBgStyle={labelBgStyle}
-        labelBgPadding={labelBgPadding}
-        labelBgBorderRadius={labelBgBorderRadius}
-        onClick={() => data?.onActivate?.()}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault()
-            data?.onActivate?.()
-          }
-        }}
-      />
-      {data?.relationship ? (
-        <EdgeToolbar
-          className="nodrag nopan"
-          edgeId={id}
-          isVisible={selected}
-          x={labelX}
-          y={labelY}
-          alignY="bottom"
-        >
-          <RelationshipDetail relationship={data.relationship} />
-          {actions ? (
-            <RelationshipControls
-              label={data.relationship.label}
-              explanation={data.relationship.explanation}
-              onSubmit={(event) => {
-                event.preventDefault()
-                const form = new FormData(event.currentTarget)
-                actions.editRelationship?.(id, {
-                  label: String(form.get('label')),
-                  explanation: String(form.get('explanation')),
-                })
-              }}
-              onDelete={() => actions.removeRelationship?.(id)}
-            />
-          ) : null}
-        </EdgeToolbar>
+      {relationship ? (
+        <EdgeLabelRenderer>
+          <div
+            className="relationship-edge__label-wrapper nodrag nopan"
+            style={{
+              transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
+            }}
+          >
+            <HoverCard
+              open={previewOpen}
+              onOpenChange={setPreviewOpen}
+              openDelay={220}
+            >
+              <HoverCardTrigger asChild>
+                <button
+                  aria-label={`Relationship: ${visibleLabel}`}
+                  aria-describedby={previewOpen ? previewId : undefined}
+                  className="relationship-edge__label"
+                  type="button"
+                  onBlur={() => setPreviewOpen(false)}
+                  onClick={(event) => event.stopPropagation()}
+                  onFocus={() => setPreviewOpen(true)}
+                  onPointerDown={(event) => event.stopPropagation()}
+                >
+                  {visibleLabel}
+                </button>
+              </HoverCardTrigger>
+              <HoverCardContent
+                id={previewId}
+                align="center"
+                className="relationship-edge__preview nodrag nopan"
+                sideOffset={10}
+              >
+                <RelationshipDetail relationship={relationship} />
+              </HoverCardContent>
+            </HoverCard>
+          </div>
+        </EdgeLabelRenderer>
       ) : null}
     </>
   )
 }
 
-function RelationshipControls({
+// Kept for the later editing pass. Relationship controls are intentionally not
+// mounted in the read-only canvas experience.
+export function RelationshipControls({
   label,
   explanation,
   onSubmit,

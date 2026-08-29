@@ -7,6 +7,7 @@ export type Paper = {
   year: number | null
   month: number | null
   summary: string
+  plain_language_summary?: string | null
   link: string
   processing_status?: string
   error?: string | null

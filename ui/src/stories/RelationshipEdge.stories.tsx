@@ -1,26 +1,14 @@
-import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
+import { expect, userEvent, waitFor, within } from 'storybook/test'
 
 import { papers, relationships } from '@/_mock/researchData'
 import { Canvas } from '@/components/Canvas'
 import { CanvasProvider } from '@/context/CanvasContext'
 
-const editRelationship = fn()
-
 function RelationshipEdgeFixture() {
-  const [selectedRelationshipId, setSelectedRelationshipId] = useState<string>()
-
   return (
-    <CanvasProvider
-      papers={papers}
-      relationships={relationships}
-      editRelationship={editRelationship}
-    >
-      <Canvas
-        selectedRelationshipId={selectedRelationshipId}
-        onRelationshipSelect={setSelectedRelationshipId}
-      />
+    <CanvasProvider papers={papers} relationships={relationships}>
+      <Canvas />
     </CanvasProvider>
   )
 }
@@ -33,7 +21,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const KeyboardEdit: Story = {
+export const HoverExplanation: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const edge = await waitFor(() =>
@@ -41,25 +29,39 @@ export const KeyboardEdit: Story = {
         name: `Relationship: ${relationships[0].label}`,
       }),
     )
+    await userEvent.hover(edge)
+    await waitFor(() =>
+      expect(
+        within(canvasElement.ownerDocument.body).getByText(
+          relationships[0].explanation,
+        ),
+      ).toBeVisible(),
+    )
+  },
+}
+
+export const KeyboardExplanation: Story = {
+  play: async ({ canvasElement }) => {
+    const edge = await waitFor(() =>
+      within(canvasElement).getByRole('button', {
+        name: `Relationship: ${relationships[0].label}`,
+      }),
+    )
     edge.focus()
+    await waitFor(() =>
+      expect(
+        within(canvasElement.ownerDocument.body).getByText(
+          relationships[0].explanation,
+        ),
+      ).toBeVisible(),
+    )
+
     await userEvent.keyboard('{Enter}')
-    const form = await waitFor(() =>
-      canvas.getByRole('form', {
+    await expect(edge).toHaveFocus()
+    await expect(
+      within(canvasElement).queryByRole('form', {
         name: `Edit relationship: ${relationships[0].label}`,
       }),
-    )
-    const label = within(form).getByRole('textbox', { name: 'Label' })
-    await userEvent.clear(label)
-    await userEvent.type(label, 'Keyboard-edited relationship{Enter}')
-
-    await expect(editRelationship).toHaveBeenCalledWith(
-      relationships[0].id,
-      expect.objectContaining({ label: 'Keyboard-edited relationship' }),
-    )
-    await expect(
-      canvas.getByRole('complementary', {
-        name: `Relationship detail: ${relationships[0].label}`,
-      }),
-    ).toBeVisible()
+    ).toBeNull()
   },
 }
