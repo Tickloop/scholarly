@@ -1,1 +1,0 @@
-import{t as e}from"./iframe-CXgjsIO4.js";e();

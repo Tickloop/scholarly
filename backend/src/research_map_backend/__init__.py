@@ -1,1 +1,0 @@
-"""Research map backend."""

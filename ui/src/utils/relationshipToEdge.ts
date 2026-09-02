@@ -1,6 +1,8 @@
-import { MarkerType } from '@xyflow/react'
-
 import type { PaperRelationship, RelationshipEdge } from '@/types'
+import {
+  RELATIONSHIP_EDGE_MARKER,
+  RELATIONSHIP_EDGE_TYPE,
+} from '@constants'
 
 export function relationshipToEdge(
   relationship: PaperRelationship,
@@ -10,10 +12,10 @@ export function relationshipToEdge(
     // Direction contract: earlier/foundational source -> later/dependent target.
     source: relationship.source,
     target: relationship.target,
-    type: 'relationship',
+    type: RELATIONSHIP_EDGE_TYPE,
     ariaLabel: `Relationship: ${relationship.label}`,
     label: relationship.label,
-    markerEnd: { type: MarkerType.Arrow },
+    markerEnd: { type: RELATIONSHIP_EDGE_MARKER },
     data: { relationship },
   }
 }
