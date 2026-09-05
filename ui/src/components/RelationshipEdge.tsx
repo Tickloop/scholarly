@@ -6,7 +6,6 @@ import {
   type EdgeProps,
 } from '@xyflow/react'
 
-import '@/components/RelationshipEdge.css'
 import type { RelationshipEdge as RelationshipEdgeType } from '@/types'
 import { getEdgeParams } from '@/utils'
 import { DEFAULT_RELATIONSHIP_LABEL } from '@constants'
@@ -60,8 +59,10 @@ export function RelationshipEdge({
       <EdgeLabelRenderer>
         <div
           aria-label={`Relationship: ${visibleLabel}`}
-          className="relationship-edge__label nodrag nopan"
+          className="nodrag nopan"
           style={{
+            position: 'absolute',
+            pointerEvents: 'none',
             transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
           }}
         >

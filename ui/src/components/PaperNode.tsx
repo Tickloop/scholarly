@@ -1,52 +1,8 @@
 import { Handle, Position, type NodeProps } from '@xyflow/react'
 import { useId, type MouseEvent } from 'react'
 
-import '@/components/PaperNode.css'
 import type { Paper, PaperCanvasNode } from '@/types'
 import { PAPER_DATE_FORMATTER, PAPER_NODE_WIDTH } from '@constants'
-
-export function PaperNode({ data, selected }: NodeProps<PaperCanvasNode>) {
-  const { paper } = data
-  const titleId = useId()
-  const publication = getPublication(paper)
-
-  function keepNodeOpen(event: MouseEvent<HTMLAnchorElement>) {
-    event.stopPropagation()
-  }
-
-  return (
-    <article
-      aria-labelledby={titleId}
-      className="paper-node"
-      data-selected={selected}
-      style={{ width: PAPER_NODE_WIDTH }}
-    >
-      <Handle type="target" position={Position.Left} />
-
-      {publication.dateTime ? (
-        <time dateTime={publication.dateTime}>{publication.label}</time>
-      ) : (
-        <span className="paper-node__date">{publication.label}</span>
-      )}
-      <h2 id={titleId}>{paper.title}</h2>
-      <p className="paper-node__author">{getAuthorLabel(paper.authors)}</p>
-      <p className="paper-node__summary">{paper.summary}</p>
-      <a
-        aria-label={`Open ${paper.title} in a new tab`}
-        className="paper-node__source nodrag nopan"
-        href={paper.link}
-        target="_blank"
-        rel="noreferrer"
-        onClick={keepNodeOpen}
-        onPointerDown={keepNodeOpen}
-      >
-        Source <span aria-hidden="true">↗</span>
-      </a>
-
-      <Handle type="source" position={Position.Right} />
-    </article>
-  )
-}
 
 function getPublication(paper: Paper) {
   if (paper.year === null) {
@@ -65,4 +21,45 @@ function getAuthorLabel(authors: string[]) {
   if (authors.length === 0) return 'Authors not listed'
   if (authors.length === 1) return authors[0]
   return `${authors[0]} +${authors.length - 1}`
+}
+
+export function PaperNode({ data }: NodeProps<PaperCanvasNode>) {
+  const { paper } = data
+  const titleId = useId()
+  const publication = getPublication(paper)
+
+  function keepNodeOpen(event: MouseEvent<HTMLAnchorElement>) {
+    event.stopPropagation()
+  }
+
+  return (
+    <article
+      aria-labelledby={titleId}
+      style={{ width: PAPER_NODE_WIDTH }}
+    >
+      <Handle type="target" position={Position.Left} />
+
+      {publication.dateTime ? (
+        <time dateTime={publication.dateTime}>{publication.label}</time>
+      ) : (
+        <span>{publication.label}</span>
+      )}
+      <h2 id={titleId}>{paper.title}</h2>
+      <p>{getAuthorLabel(paper.authors)}</p>
+      <p>{paper.summary}</p>
+      <a
+        aria-label={`Open ${paper.title} in a new tab`}
+        className="nodrag nopan"
+        href={paper.link}
+        target="_blank"
+        rel="noreferrer"
+        onClick={keepNodeOpen}
+        onPointerDown={keepNodeOpen}
+      >
+        Source <span aria-hidden="true">↗</span>
+      </a>
+
+      <Handle type="source" position={Position.Right} />
+    </article>
+  )
 }

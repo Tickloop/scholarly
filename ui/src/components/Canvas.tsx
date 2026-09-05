@@ -8,7 +8,6 @@ import {
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 
-import '@/components/Canvas.css'
 import { PaperNode } from '@/components/PaperNode'
 import { RelationshipEdge } from '@/components/RelationshipEdge'
 import { papersToNodes, relationshipToEdge } from '@/utils'
@@ -24,7 +23,7 @@ export function Canvas() {
   const [edges, , onEdgesChange] = useEdgesState(initialEdges)
 
   return (
-    <main aria-label="Research canvas" className="research-canvas">
+    <main aria-label="Research canvas" style={{ height: '100%' }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
