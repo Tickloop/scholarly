@@ -8,7 +8,7 @@ import {
 
 import type { RelationshipEdge as RelationshipEdgeType } from '@/types'
 import { getEdgeParams } from '@/utils'
-import { DEFAULT_RELATIONSHIP_LABEL } from '@constants'
+import { DEFAULT_RELATIONSHIP_LABEL } from '@/constants'
 
 export function RelationshipEdge({
   id,

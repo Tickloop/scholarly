@@ -2,7 +2,7 @@ import { Handle, Position, type NodeProps } from '@xyflow/react'
 import { useId, type MouseEvent } from 'react'
 
 import type { Paper, PaperCanvasNode } from '@/types'
-import { PAPER_DATE_FORMATTER, PAPER_NODE_WIDTH } from '@constants'
+import { PAPER_DATE_FORMATTER, PAPER_NODE_WIDTH } from '@/constants'
 
 function getPublication(paper: Paper) {
   if (paper.year === null) {

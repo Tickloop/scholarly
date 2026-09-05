@@ -11,7 +11,7 @@ import '@xyflow/react/dist/style.css'
 import { PaperNode } from '@/components/PaperNode'
 import { RelationshipEdge } from '@/components/RelationshipEdge'
 import { papersToNodes, relationshipToEdge } from '@/utils'
-import { PAPERS, RELATIONSHIPS } from '@constants'
+import { PAPERS, RELATIONSHIPS } from '@/constants'
 
 const nodeTypes = { paper: PaperNode }
 const edgeTypes = { relationship: RelationshipEdge }

@@ -2,7 +2,7 @@ import type { PaperRelationship, RelationshipEdge } from '@/types'
 import {
   RELATIONSHIP_EDGE_MARKER,
   RELATIONSHIP_EDGE_TYPE,
-} from '@constants'
+} from '@/constants'
 
 export function relationshipToEdge(
   relationship: PaperRelationship,

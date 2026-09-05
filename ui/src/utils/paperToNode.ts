@@ -1,7 +1,7 @@
 import type { XYPosition } from '@xyflow/react'
 
 import type { Paper, PaperCanvasNode } from '@/types'
-import { DEFAULT_NODE_POSITION, PAPER_NODE_TYPE } from '@constants'
+import { DEFAULT_NODE_POSITION, PAPER_NODE_TYPE } from '@/constants'
 
 export function paperToNode(
   paper: Paper,
