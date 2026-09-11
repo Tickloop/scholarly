@@ -2,7 +2,7 @@ import { Handle, Position, type NodeProps } from '@xyflow/react'
 import { useId, type MouseEvent } from 'react'
 
 import type { Paper, PaperNode } from '@/types'
-import { PAPER_DATE_FORMATTER, PAPER_NODE_WIDTH } from '@/constants'
+import { formatPaperDate } from '@/utils'
 
 function getPublication(paper: Paper) {
   if (paper.year === null) {
@@ -13,7 +13,7 @@ function getPublication(paper: Paper) {
   }
   return {
     dateTime: `${paper.year}-${String(paper.month).padStart(2, '0')}`,
-    label: `${PAPER_DATE_FORMATTER.format(new Date(Date.UTC(paper.year, paper.month - 1)))} ${paper.year}`,
+    label: formatPaperDate(paper.year, paper.month),
   }
 }
 
@@ -35,7 +35,7 @@ export function PaperNode({ data }: NodeProps<PaperNode>) {
   return (
     <article
       aria-labelledby={titleId}
-      style={{ width: PAPER_NODE_WIDTH, border: "1px solid black", padding: "0.25rem 0.5rem", borderRadius: "0.5rem" }}
+      style={{ width: 320, border: "1px solid black", padding: "0.25rem 0.5rem", borderRadius: "0.5rem" }}
     >
       <Handle type="target" position={Position.Left} style={{ opacity: 0 }}/>
 

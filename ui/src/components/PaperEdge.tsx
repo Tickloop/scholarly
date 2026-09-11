@@ -8,7 +8,6 @@ import {
 
 import type { PaperEdge as PaperEdgeType } from '@/types'
 import { getEdgeParams } from '@/utils'
-import { DEFAULT_RELATIONSHIP_LABEL } from '@/constants'
 
 export function PaperEdge({
   id,
@@ -18,7 +17,6 @@ export function PaperEdge({
   markerEnd,
   style,
   interactionWidth,
-  label,
   data,
 }: EdgeProps<PaperEdgeType>) {
   const sourceNode = useInternalNode(source)
@@ -42,9 +40,7 @@ export function PaperEdge({
     targetY,
     targetPosition,
   })
-  const visibleLabel = String(
-    label ?? data?.relationship.label ?? DEFAULT_RELATIONSHIP_LABEL,
-  )
+  const visibleLabel = data?.relationship.label ?? 'Related'
 
   return (
     <>

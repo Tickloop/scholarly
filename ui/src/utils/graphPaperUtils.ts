@@ -1,3 +1,5 @@
+import { MarkerType, type XYPosition } from '@xyflow/react'
+
 import {
   PaperEdgeType,
   PaperNodeType,
@@ -6,16 +8,19 @@ import {
   type PaperNode,
   type PaperRelationship,
 } from '@/types'
-import {
-  DEFAULT_NODE_POSITION,
-  RELATIONSHIP_EDGE_MARKER,
-} from '@/constants'
 
-import type { XYPosition } from '@xyflow/react'
+export function formatPaperDate(year: number, month: number): string {
+  const formatter = new Intl.DateTimeFormat('en', {
+    month: 'short',
+    timeZone: 'UTC',
+  })
+
+  return `${formatter.format(new Date(Date.UTC(year, month - 1)))} ${year}`
+}
 
 export function paperToNode(
   paper: Paper,
-  position: XYPosition = DEFAULT_NODE_POSITION,
+  position: XYPosition = { x: 0, y: 0 },
 ): PaperNode {
   return {
     id: paper.id,
@@ -36,7 +41,7 @@ export function relationshipToEdge(
     type: PaperEdgeType,
     ariaLabel: `Relationship: ${relationship.label}`,
     label: relationship.label,
-    markerEnd: { type: RELATIONSHIP_EDGE_MARKER },
+    markerEnd: { type: MarkerType.Arrow },
     data: { relationship },
   }
 }
@@ -44,8 +49,8 @@ export function relationshipToEdge(
 export function papersToNodes(papers: Paper[]): PaperNode[] {
   return papers.map((paper) =>
     paperToNode(paper, {
-      x: paper.x ?? DEFAULT_NODE_POSITION.x,
-      y: paper.y ?? DEFAULT_NODE_POSITION.y,
+      x: paper.x ?? 0,
+      y: paper.y ?? 0,
     }),
   )
 }
