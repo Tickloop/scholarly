@@ -1,11 +1,9 @@
 import { MarkerType, type XYPosition } from '@xyflow/react'
 
-import type { Paper, PaperRelationship } from '@/types'
+import type { Paper, PaperRelationship } from '@/types/research'
 
 export const PAPER_NODE_WIDTH = 320
 export const DEFAULT_NODE_POSITION: XYPosition = { x: 0, y: 0 }
-export const PAPER_NODE_TYPE = 'paper' as const
-export const RELATIONSHIP_EDGE_TYPE = 'relationship' as const
 export const RELATIONSHIP_EDGE_MARKER = MarkerType.Arrow
 export const DEFAULT_RELATIONSHIP_LABEL = 'Related'
 

@@ -1,5 +1,10 @@
 import { Canvas } from '@/components/Canvas'
+import { GraphProvider } from '@/contexts/GraphProvider'
 
 export default function App() {
-  return <Canvas />
+  return (
+    <GraphProvider>
+      <Canvas />
+    </GraphProvider>
+  )
 }

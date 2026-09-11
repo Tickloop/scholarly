@@ -1,7 +1,7 @@
 import { Handle, Position, type NodeProps } from '@xyflow/react'
 import { useId, type MouseEvent } from 'react'
 
-import type { Paper, PaperCanvasNode } from '@/types'
+import type { Paper, PaperNode } from '@/types'
 import { PAPER_DATE_FORMATTER, PAPER_NODE_WIDTH } from '@/constants'
 
 function getPublication(paper: Paper) {
@@ -23,7 +23,7 @@ function getAuthorLabel(authors: string[]) {
   return `${authors[0]} +${authors.length - 1}`
 }
 
-export function PaperNode({ data }: NodeProps<PaperCanvasNode>) {
+export function PaperNode({ data }: NodeProps<PaperNode>) {
   const { paper } = data
   const titleId = useId()
   const publication = getPublication(paper)
@@ -35,9 +35,9 @@ export function PaperNode({ data }: NodeProps<PaperCanvasNode>) {
   return (
     <article
       aria-labelledby={titleId}
-      style={{ width: PAPER_NODE_WIDTH }}
+      style={{ width: PAPER_NODE_WIDTH, border: "1px solid black", padding: "0.25rem 0.5rem", borderRadius: "0.5rem" }}
     >
-      <Handle type="target" position={Position.Left} />
+      <Handle type="target" position={Position.Left} style={{ opacity: 0 }}/>
 
       {publication.dateTime ? (
         <time dateTime={publication.dateTime}>{publication.label}</time>
@@ -59,7 +59,7 @@ export function PaperNode({ data }: NodeProps<PaperCanvasNode>) {
         Source <span aria-hidden="true">↗</span>
       </a>
 
-      <Handle type="source" position={Position.Right} />
+      <Handle type="source" position={Position.Right} style={{ opacity: 0 }}/>
     </article>
   )
 }

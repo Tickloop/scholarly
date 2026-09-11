@@ -6,11 +6,11 @@ import {
   type EdgeProps,
 } from '@xyflow/react'
 
-import type { RelationshipEdge as RelationshipEdgeType } from '@/types'
+import type { PaperEdge as PaperEdgeType } from '@/types'
 import { getEdgeParams } from '@/utils'
 import { DEFAULT_RELATIONSHIP_LABEL } from '@/constants'
 
-export function RelationshipEdge({
+export function PaperEdge({
   id,
   source,
   target,
@@ -20,7 +20,7 @@ export function RelationshipEdge({
   interactionWidth,
   label,
   data,
-}: EdgeProps<RelationshipEdgeType>) {
+}: EdgeProps<PaperEdgeType>) {
   const sourceNode = useInternalNode(source)
   const targetNode = useInternalNode(target)
 
